@@ -1,0 +1,72 @@
+1.我把命令做了归类，目录放在remo_http.c里
+2.getsystime这个cgi在源代码中没有被开启，建议开启。setsystime华为方面做了阉割，把修改时区和时间格式的部分搞掉了。有需要可以添加进去。
+3.photo函数我没有追到type和cmd的含义。注释为空
+4. STARTAFS ENABLEAFC SETOPTZOOM不存在。
+5.其中的record2函数最后还是引用了record函数，所以纯属冗余，已经添加了record。
+
+
+
+
+
+
+
+附录：
+setoptzoom.c
+#include "process.h" 
+
+int set_optzoom(int ac,char* av[]);
+
+SUB_PROCESS_ARRAY sub_proc_optzoom[]={
+    {"set",set_optzoom,"optzoom set [pos]:set optzoom.\n\
+    					\t--pos:	\n\
+						\texample: optzoom set 0\n"
+    },
+};
+
+int optzoom(int ac,char* av[]){
+	Call_Sub(ac,av);
+}
+
+int set_optzoom(int ac,char* av[]){
+
+	if(ac-4){
+		printf("Wrong Format:optzoom\n");
+        usage(ac,av);
+        return WRONG;
+    }
+
+    strcat(request,"setoptzoom.cgi?");
+    strcat(request,"-pos=");
+    strcat(request,av[3]);
+
+    return OK;
+} 
+
+enableafc.c:
+int set_enableafc(int ac,char* av[]);
+
+SUB_PROCESS_ARRAY sub_proc_enableafc[]={
+    {"set",set_enableafc,"enableafc set <enable>:set enableafc.\n\
+						\t--enable: 	enable=1,\n\
+										disable=0\n\
+						\texample: enableafc set 0\n"
+    },
+};
+
+int set_enableafc(int ac,char* av[]){
+
+	if(ac-4){
+		printf("Wrong Format:enableafc\n");
+        usage(ac,av);
+        return WRONG;
+    }
+
+    strcat(request,"setenableafc.cgi?");
+    strcat(request,"-enable=");
+    strcat(request,av[3]);
+
+    return OK;
+} 
+
+
+
